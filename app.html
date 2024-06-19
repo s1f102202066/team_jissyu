@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>飲食店おすすめアプリ</title>
+    <script>
+        async function getRecommendations() {
+            const location = document.getElementById('location').value;
+            const preferences = document.getElementById('preferences').value;
+
+            const response = await fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ location, preferences }),
+            });
+
+            const result = await response.json();
+            document.getElementById('recommendations').innerText = result.recommendations;
+        }
+    </script>
+</head>
+<body>
+    <h1>旅行客におすすめの飲食店</h1>
+    <label for="location">場所:</label>
+    <input type="text" id="location" name="location"><br>
+    <label for="preferences">好み:</label>
+    <input type="text" id="preferences" name="preferences"><br>
+    <button onclick="getRecommendations()">おすすめを表示</button>
+    <h2>おすすめの飲食店</h2>
+    <pre id="recommendations"></pre>
+</body>
+</html>
