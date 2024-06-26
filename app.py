@@ -1,28 +1,48 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from dotenv import load_dotenv
 import openai
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
+app.config.from_object('config.Config')
 
-# OpenAI APIキーを設定
-openai.api_key = 'T52k19ishQNb31Xp_E0fLGFSIUB8YphDc5CaN2p11kjqAMvCRCBYi2HeOBnGxBkVHb055gjl_NS5suSKD6SI2LQ'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
+import models  # Import models
 
-# 飲食店をおすすめするエンドポイント
-@app.route('/recommend', methods=['POST'])
-def recommend():
+# Set OpenAI API key
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
+# Route to render the chat interface
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+# Route to handle chat messages
+@app.route('/chat', methods=['POST'])
+def chat():
     data = request.json
-    location = data.get('location', '')
-    preferences = data.get('preferences', '')
+    user_message = data.get('message', '')
 
-    # OpenAI APIを使って飲食店をおすすめ
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"旅行客におすすめの飲食店を教えてください。場所: {location}、好み: {preferences}",
+    # Use OpenAI API to generate a response
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": user_message}
+        ],
         max_tokens=150
     )
 
-    recommendations = response.choices[0].text.strip()
-    return jsonify({'recommendations': recommendations})
+    chatgpt_response = response['choices'][0]['message']['content'].strip()
+    return jsonify({'response': chatgpt_response})
 
 if __name__ == '__main__':
     app.run(debug=True)
+
