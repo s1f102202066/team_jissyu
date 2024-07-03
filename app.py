@@ -37,7 +37,7 @@ def chat():
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": user_message}
         ],
-        max_tokens=150
+        max_tokens=1000
     )
 
     chatgpt_response = response['choices'][0]['message']['content'].strip()
