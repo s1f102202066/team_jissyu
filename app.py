@@ -28,7 +28,7 @@ def home():
 # Function to get restaurant recommendations from Hot Pepper API
 def get_restaurant_recommendations(query):
     api_key = os.getenv('HOTPEPPER_API_KEY')
-    url = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
+    url = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=de36c96caa8a139d&lat=34.67&lng=135.52&range=5&order=4'
     params = {
         'key': api_key,
         'format': 'json',
