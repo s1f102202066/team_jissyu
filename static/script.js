@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chat-form');
     const chatBox = document.getElementById('chat-box');
 
+    // 初回メッセージを表示
+    const initialMessageDiv = document.createElement('div');
+    initialMessageDiv.classList.add('message', 'chatgpt');
+    initialMessageDiv.textContent = 'あなたがお探しの飲食店の条件を教えてください。';
+    chatBox.appendChild(initialMessageDiv);
+
     if (chatForm) {
         chatForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -54,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('chatForm element not found');
     }
 });
+
 
 
 

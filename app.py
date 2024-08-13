@@ -28,12 +28,13 @@ def home():
 # Function to get restaurant recommendations from Hot Pepper API
 def get_restaurant_recommendations(query):
     api_key = os.getenv('HOTPEPPER_API_KEY')
-    url = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=de36c96caa8a139d&lat=34.67&lng=135.52&range=5&order=4'
+    url = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
     params = {
         'key': api_key,
         'format': 'json',
         'keyword': query,
-        'count': 5  # Number of results to return
+        'large_area': 'Z011',  # 東京エリアを指定（Z011は東京エリアのコード）
+        'count': 5  # 返す結果の数
     }
     response = requests.get(url, params=params)
     if response.status_code == 200:
@@ -57,7 +58,7 @@ def chat():
 
     # Use OpenAI API to generate a response
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant. If the user asks for restaurant recommendations, suggest some based on their criteria."},
             {"role": "user", "content": user_message}
@@ -68,15 +69,13 @@ def chat():
     chatgpt_response = response['choices'][0]['message']['content'].strip()
 
     # Check if the response should include restaurant recommendations
-    if "recommend" in user_message.lower():
+    if "recommend" in user_message.lower() or "レストラン" in user_message.lower() or "飲食店" in user_message.lower():
         recommendations = get_restaurant_recommendations(user_message)
         if recommendations:
             recommendation_text = "Here are some restaurant recommendations based on your query:\n"
             for rec in recommendations:
                 recommendation_text += f"- {rec['name']}: {rec['address']} (More info: {rec['url']})\n"
             chatgpt_response += "\n\n" + recommendation_text
-        else:
-            chatgpt_response += "\n\nSorry, I couldn't find any matching restaurants."
 
     return jsonify({'response': chatgpt_response})
 
