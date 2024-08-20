@@ -44,7 +44,8 @@ def get_restaurant_recommendations(query):
             recommendations.append({
                 'name': shop.get('name'),
                 'address': shop.get('address'),
-                'url': shop.get('urls', {}).get('pc')
+                'url': shop.get('urls', {}).get('pc'),
+                'image_url': shop.get('photo', {}).get('pc', {}).get('l') 
             })
         return recommendations
     else:
@@ -73,7 +74,7 @@ def chat():
     if recommendations:
         recommendation_text = ""
         for rec in recommendations:
-            recommendation_text += f"- 店名: {rec['name']}\n  住所: {rec['address']}\n  詳細: {rec['url']}\n\n"
+            recommendation_text += f"- 店名: {rec['name']}\n  住所: {rec['address']}\n  詳細: {rec['url']}\n  画像: {rec['image_url']}\n\n"
         chatgpt_response += "\n\n" + recommendation_text.strip()
     else:
         # If no restaurants are found, suggest thinking about food anyway
@@ -83,5 +84,6 @@ def chat():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 

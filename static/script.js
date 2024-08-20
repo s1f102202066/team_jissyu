@@ -47,7 +47,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Display ChatGPT response in chat box
                 const chatgptMessageDiv = document.createElement('div');
                 chatgptMessageDiv.classList.add('message', 'chatgpt');
-                chatgptMessageDiv.textContent = `ChatGPT: ${chatgptResponse}`;
+
+                // Split the response by new lines
+                const lines = chatgptResponse.split('\n');
+                lines.forEach(line => {
+                    if (line.startsWith('画像: ')) {
+                        const imgUrl = line.replace('画像: ', '').trim();
+                        const imgElement = document.createElement('img');
+                        imgElement.src = imgUrl;
+                        imgElement.alt = 'Restaurant Image';
+                        imgElement.classList.add('restaurant-image');
+                        chatgptMessageDiv.appendChild(imgElement);
+                    } else {
+                        const textNode = document.createElement('p');
+                        textNode.textContent = line;
+                        chatgptMessageDiv.appendChild(textNode);
+                    }
+                });
+
                 chatBox.appendChild(chatgptMessageDiv);
 
                 // Scroll to the bottom of the chat box
@@ -60,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('chatForm element not found');
     }
 });
+
+
+
 
 
 
