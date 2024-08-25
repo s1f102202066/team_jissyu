@@ -25,6 +25,8 @@ body {
     padding: 15px;
     overflow-y: auto;
     background-color: #f9f9f9;
+    max-height: 500px;
+    border-bottom: 1px solid #ddd;
 }
 
 .message {
@@ -76,4 +78,13 @@ button {
 
 button:hover {
     background: linear-gradient(45deg, #5b86e5, #36d1dc);
+}
+
+/* Add styles for the restaurant images */
+.restaurant-image {
+    width: 100%;
+    max-width: 300px; /* Adjust this as needed */
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }

@@ -44,7 +44,8 @@ def get_restaurant_recommendations(query):
             recommendations.append({
                 'name': shop.get('name'),
                 'address': shop.get('address'),
-                'url': shop.get('urls', {}).get('pc')
+                'url': shop.get('urls', {}).get('pc'),
+                'image_url': shop.get('photo', {}).get('pc', {}).get('l') 
             })
         return recommendations
     else:
@@ -60,7 +61,7 @@ def chat():
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant. If the user asks for restaurant recommendations, suggest some based on their criteria."},
+            {"role": "system", "content": "You are a helpful assistant. No matter the topic, you always relate the conversation back to restaurants or food recommendations."},
             {"role": "user", "content": user_message}
         ],
         max_tokens=1000
@@ -68,16 +69,21 @@ def chat():
 
     chatgpt_response = response['choices'][0]['message']['content'].strip()
 
-    # Check if the response should include restaurant recommendations
-    if "recommend" in user_message.lower() or "レストラン" in user_message.lower() or "飲食店" in user_message.lower():
-        recommendations = get_restaurant_recommendations(user_message)
-        if recommendations:
-            recommendation_text = "Here are some restaurant recommendations based on your query:\n"
-            for rec in recommendations:
-                recommendation_text += f"- {rec['name']}: {rec['address']} (More info: {rec['url']})\n"
-            chatgpt_response += "\n\n" + recommendation_text
+    # Always include restaurant recommendations based on user's message
+    recommendations = get_restaurant_recommendations(user_message)
+    if recommendations:
+        recommendation_text = ""
+        for rec in recommendations:
+            recommendation_text += f"- 店名: {rec['name']}\n  住所: {rec['address']}\n  詳細: {rec['url']}\n  画像: {rec['image_url']}\n\n"
+        chatgpt_response += "\n\n" + recommendation_text.strip()
+    else:
+        # If no restaurants are found, suggest thinking about food anyway
+        chatgpt_response += "\n\nところで、美味しい飲食店をお探しではありませんか？どんな話題でも食事に関する情報をご提供いたします。"
 
     return jsonify({'response': chatgpt_response})
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
