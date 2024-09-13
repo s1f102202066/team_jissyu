@@ -3,3 +3,4 @@ Flask-SQLAlchemy==2.5.1
 Flask-Migrate==3.1.0
 python-dotenv==0.19.2
 openai==1.0.0
+requests
