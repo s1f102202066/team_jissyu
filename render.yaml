@@ -1,0 +1,12 @@
+# render.yaml
+services:
+  - type: web
+    name: flask-app
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+    regions:
+      - oregon
