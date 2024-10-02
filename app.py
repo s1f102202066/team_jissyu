@@ -33,7 +33,7 @@ def get_restaurant_recommendations(query):
         'key': api_key,
         'format': 'json',
         'keyword': query,
-        'middle_area': 'Y055',  # 赤羽エリア
+        'large_area': 'Z011',  # 東京エリアを指定（Z011は東京エリアのコード）
         'count': 5  # 返す結果の数
     }
     response = requests.get(url, params=params)
