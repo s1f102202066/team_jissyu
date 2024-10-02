@@ -6,7 +6,8 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    max-width: 500px;
+    max-width: 1000;
+    width: 100%;
 }
 
 #chat-container {
@@ -28,6 +29,7 @@ body {
     background-color: #f9f9f9;
     max-height: 500px;
     border-bottom: 1px solid #ddd;
+    width: 100%;
 }
 
 .message {
