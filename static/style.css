@@ -6,16 +6,12 @@ html, body {
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #E0E0E0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    background-color: #ede2e2;
 }
 
 #chat-container {
-    width: 100%;
-    max-width: 500px;
+    width: 1000px;
+    max-width: 1000px;
     border: 1px solid #ccc;
     border-radius: 15px;
     background-color: #fff;
@@ -32,7 +28,7 @@ body {
     background-color: #f9f9f9;
     max-height: 500px;
     border-bottom: 1px solid #ddd;
-    width: 100%;
+    width: 115%;
 }
 
 .message {
