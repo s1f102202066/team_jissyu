@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import openai
 import os
 import requests
+from bs4 import BeautifulSoup
+import re
 
 # Load environment variables from .env file
 load_dotenv()
@@ -24,6 +26,29 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 @app.route('/')
 def home():
     return render_template('index.html')
+
+# Function to extract OGP metadata from a URL
+def get_ogp_info(url):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        og_title = soup.find('meta', property='og:title')
+        og_description = soup.find('meta', property='og:description')
+        og_image = soup.find('meta', property='og:image')
+
+        title = og_title['content'] if og_title else 'No title available'
+        description = og_description['content'] if og_description else 'No description available'
+        image = og_image['content'] if og_image else None
+
+        return {
+            'title': title,
+            'description': description,
+            'image': image
+        }
+    except Exception as e:
+        print(f"Error while fetching OGP info: {e}")
+        return None
 
 # Function to get restaurant recommendations from Hot Pepper API
 def get_restaurant_recommendations(query):
@@ -69,6 +94,20 @@ def chat():
 
     chatgpt_response = response['choices'][0]['message']['content'].strip()
 
+    # Check if the user message contains a URL
+    url_pattern = re.compile(r'(https?://[^\s]+)')
+    urls = url_pattern.findall(user_message)
+
+    if urls:
+        url = urls[0]  # 1つ目のURLを処理する
+        ogp_info = get_ogp_info(url)
+        if ogp_info:
+            # Add the OGP information to the response
+            preview_text = f"\n\nプレビュー:\nタイトル: {ogp_info['title']}\n説明: {ogp_info['description']}\n"
+            if ogp_info['image']:
+                preview_text += f"画像: {ogp_info['image']}\n"
+            chatgpt_response += preview_text
+
     # Always include restaurant recommendations based on user's message
     recommendations = get_restaurant_recommendations(user_message)
     if recommendations:
@@ -84,6 +123,3 @@ def chat():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-

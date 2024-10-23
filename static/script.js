@@ -74,3 +74,23 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('chatForm element not found');
     }
 });
+
+// サーバーからのレスポンスを処理
+const chatgptResponse = result.response;
+
+// Split the response by new lines and process each line
+const lines = chatgptResponse.split('\n');
+lines.forEach(line => {
+    if (line.startsWith('画像: ')) {
+        const imgUrl = line.replace('画像: ', '').trim();
+        const imgElement = document.createElement('img');
+        imgElement.src = imgUrl;
+        imgElement.alt = 'URL Preview Image';
+        imgElement.classList.add('url-preview-image');
+        chatgptMessageDiv.appendChild(imgElement);
+    } else {
+        const textNode = document.createElement('p');
+        textNode.textContent = line;
+        chatgptMessageDiv.appendChild(textNode);
+    }
+});
