@@ -10,24 +10,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (chatForm) {
         chatForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            console.log("Form submitted");
+            e.preventDefault(); // フォームのデフォルトの送信を防止
 
             const userMessage = document.getElementById('message').value;
-            if (userMessage.trim() === '') return;
-            console.log("User message:", userMessage);
+            if (userMessage.trim() === '') return; // ユーザーが空白メッセージを送信しないように
 
-            // Display user message in chat box
+            // ユーザーメッセージをチャットボックスに表示
             const userMessageDiv = document.createElement('div');
             userMessageDiv.classList.add('message', 'user');
             userMessageDiv.textContent = `You: ${userMessage}`;
             chatBox.appendChild(userMessageDiv);
 
-            // Clear the input field
+            // 入力フィールドをクリア
             document.getElementById('message').value = '';
 
             try {
-                // Send the message to the server
+                // サーバーにメッセージを送信
                 const response = await fetch('/chat', {
                     method: 'POST',
                     headers: {
@@ -42,13 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const result = await response.json();
                 const chatgptResponse = result.response;
-                console.log("ChatGPT response:", chatgptResponse);
 
-                // Display ChatGPT response in chat box
+                // ChatGPTの応答をチャットボックスに表示
                 const chatgptMessageDiv = document.createElement('div');
                 chatgptMessageDiv.classList.add('message', 'chatgpt');
 
-                // Split the response by new lines
+                // 応答を改行ごとに分割して処理
                 const lines = chatgptResponse.split('\n');
                 lines.forEach(line => {
                     if (line.startsWith('画像: ')) {
@@ -67,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 chatBox.appendChild(chatgptMessageDiv);
 
-                // Scroll to the bottom of the chat box
+                // チャットボックスをスクロールして最新メッセージを表示
                 chatBox.scrollTop = chatBox.scrollHeight;
             } catch (error) {
                 console.error('Error:', error);
@@ -77,11 +74,3 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('chatForm element not found');
     }
 });
-
-
-
-
-
-
-
-
